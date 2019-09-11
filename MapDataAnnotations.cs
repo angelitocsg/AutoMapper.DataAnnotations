@@ -7,16 +7,23 @@ using System.Reflection;
 
 namespace AutoMapper.DataAnnotations
 {
-    public class AutoMapperAttributeBuilder<T1> : IMapperFactory<T1> where T1 : class
+    public class MapDataAnnotations : IMapperFactory
     {
-        private readonly IEnumerable<Assembly> _assemblies;
+        private static IEnumerable<Assembly> _assemblies;
         private readonly IEnumerable<Type> _mapTargets;
         private readonly Profile _profile;
         private readonly bool _reverseMap;
+        private readonly Type _type;
 
-        public AutoMapperAttributeBuilder(IEnumerable<Assembly> assemblies, Profile profile, bool reverseMap)
+        public static void Init(IEnumerable<Assembly> assemblies)
         {
             _assemblies = assemblies;
+        }
+
+        public MapDataAnnotations(Type type, Profile profile, bool reverseMap)
+        {
+            if (_assemblies == null) { throw new InvalidOperationException($"Please execute Init() on 'MapDataAnnotations' before start"); }
+            _type = type;
             _mapTargets = GetMapTargets();
             _profile = profile;
             _reverseMap = reverseMap;
@@ -37,7 +44,7 @@ namespace AutoMapper.DataAnnotations
 
         public (IMappingExpression mapFrom, IMappingExpression mapTo) BuildMapper(Type targetExplicit = null)
         {
-            var types = GetMapperBySource(typeof(T1));
+            var types = GetMapperBySource(_type);
 
             if (targetExplicit != null)
                 types = types.Where(e => e.GetType() == targetExplicit);
@@ -49,10 +56,10 @@ namespace AutoMapper.DataAnnotations
 
             if (HasMapFieldNameAttribute(target))
             {
-                return CreateMapWithForMembers(typeof(T1), target);
+                return CreateMapWithForMembers(_type, target);
             }
 
-            var mappingExpression = _profile.CreateMap(typeof(T1), target);
+            var mappingExpression = _profile.CreateMap(_type, target);
             if (_reverseMap) { mappingExpression.ReverseMap(); }
 
             return (mappingExpression, null);

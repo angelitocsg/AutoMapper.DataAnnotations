@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace AutoMapper.DataAnnotations.Extensions
 {
@@ -9,10 +7,9 @@ namespace AutoMapper.DataAnnotations.Extensions
         public static (IMappingExpression mapFrom, IMappingExpression mapTo) GetCustomMapper<T>(
             this Type type,
             Profile profile,
-            bool reverseMap,
-            IEnumerable<Assembly> assemblies) where T : class
+            bool reverseMap) where T : class
         {
-            var builder = new AutoMapperAttributeBuilder<T>(assemblies, profile, true);
+            var builder = new MapDataAnnotations(typeof(T), profile, reverseMap);
             return builder.BuildMapper();
         }
     }

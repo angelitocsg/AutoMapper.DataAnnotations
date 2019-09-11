@@ -11,6 +11,9 @@
     <PackageId>AC.AutoMapper.DataAnnotations</PackageId>
     <Product>AC.AutoMapper.DataAnnotations</Product>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
