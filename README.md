@@ -1,8 +1,33 @@
 # AutoMapper.DataAnnotations
 
+## Register Mapping
+
+```csharp
+using AutoMapper.DataAnnotations;
+using AutoMapper.DataAnnotations.Extensions;
+...
+public class DataModelMappers : Profile
+{
+  public DataModelMappers()
+  {
+    MapDataAnnotations.Init(AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("MyApp")););
+
+    var (userMapFrom, userMapTo) = typeof(User).GetCustomMapper<User>(this, true);
+        
+    userMapFrom
+      .ForMember(nameof(UserDataModel.IsActive), m => m.MapFrom(src => ((User)src).Active ? "Y" : "N"));
+    userMapTo?
+      .ForMember(nameof(User.Active), m => m.MapFrom(src => ((UserDataModel)src).IsActive == "Y"));
+    ...
+  }
+}
+```
+
 ## Create Mapping
 
 ```csharp
+using AutoMapper.DataAnnotations.Attributes;
+...
 namespace Domain {
   public class User {
     public int Id;
@@ -14,6 +39,8 @@ namespace Domain {
 ```
 
 ```csharp
+using AutoMapper.DataAnnotations.Attributes;
+...
 namespace InfraData {
   [MapTargetFrom(typeof(User))]
   public class UserDTO {
@@ -23,20 +50,6 @@ namespace InfraData {
     public int UserName;
     public int Email;
     public string IsActive;
-  }
-}
-```
-
-```csharp
-public class DtoMappers : Profile
-{
-  public DtoMappers()
-  {
-    var (userMapFrom, userMapTo) = typeof(User).GetCustomMapper<User>(this, true);
-      userMapFrom
-        .ForMember(nameof(UserDataModel.IsActive), m => m.MapFrom(src => ((User)src).Active ? "Y" : "N"));
-      userMapTo?
-        .ForMember(nameof(User.Active), m => m.MapFrom(src => ((UserDataModel)src).IsActive == "Y"));
   }
 }
 ```
