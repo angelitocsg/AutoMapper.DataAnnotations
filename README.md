@@ -1,5 +1,7 @@
 # AutoMapper.DataAnnotations
 
+Nuget Package: https://www.nuget.org/packages/AC.AutoMapper.DataAnnotations/
+
 ## Register Mapping
 
 ```csharp
